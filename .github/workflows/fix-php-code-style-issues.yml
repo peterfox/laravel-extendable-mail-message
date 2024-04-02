@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - '**.php'
+      - 'composer.json'
+      - 'pint.json'
+      - '.github/workflows/fix-php-code-style-issues.yml'
 
 permissions:
   contents: write
@@ -14,13 +17,22 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
+      - uses: actions/checkout@v4
 
-      - name: Fix PHP code style issues
-        uses: aglipanci/laravel-pint-action@2.3.1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Run Rector
+        run: ./vendor/bin/rector
+
+      - name: Run Pint
+        run: ./vendor/bin/pint
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5

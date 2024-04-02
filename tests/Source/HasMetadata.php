@@ -10,7 +10,7 @@ trait HasMetadata
 
     public static function bootHasMetadata(): void
     {
-        self::$bootedTrait++;
+        ++self::$bootedTrait;
     }
 
     public function initializeHasMetadata(): void

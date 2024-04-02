@@ -19,8 +19,6 @@ class ExtendableMailMessage extends BaseMailMessage
 
     /**
      * Check if the model needs to be booted and if so, do it.
-     *
-     * @return void
      */
     protected function bootIfNotBooted(): void
     {
@@ -39,7 +37,7 @@ class ExtendableMailMessage extends BaseMailMessage
 
         foreach (class_uses_recursive($class) as $trait) {
             $traitBaseName = class_basename($trait);
-            $method = "boot$traitBaseName";
+            $method = 'boot' . $traitBaseName;
 
             if (method_exists($class, $method) && ! in_array($method, $booted)) {
                 forward_static_call([$class, $method]);
@@ -47,7 +45,7 @@ class ExtendableMailMessage extends BaseMailMessage
                 $booted[] = $method;
             }
 
-            if (method_exists($class, $method = "initialize$traitBaseName")) {
+            if (method_exists($class, $method = 'initialize' . $traitBaseName)) {
                 static::$traitInitializers[$class][] = $method;
 
                 static::$traitInitializers[$class] = array_unique(
